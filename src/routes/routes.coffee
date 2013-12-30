@@ -80,6 +80,21 @@ util =
       if item.value.match(/(em|rem)$/g) then item.relativeValue = ((raw * 16) / max * 100)
       if item.value.match(/px$/g) then item.relativeValue = (raw / max * 100)
 
+  getFileName: (url) ->
+    name = url.match(/\/([^\/]+\.css)/)[1]
+
+  getRequestInfo: (url) ->
+    _when.promise (resolve, reject, notify) ->
+      req = request url: url, encoding: 'utf8', (error, response, body) ->
+        if not error and response.statusCode is 200
+          resolve 
+            url: url,
+            size: response.connection.bytesRead,
+            body: body
+            name: util.getFileName(url)
+        else
+          reject error
+
   getUrlContents: (url) ->
     _when.promise (resolve, reject, notify) ->
       req = request url: url, encoding: 'utf8', (error, response, body) ->
@@ -100,7 +115,7 @@ util =
       util.getUrlContents(url).then (body) ->
         parsedUrl = _url.parse url
         cssUrls = []
-        cssFiles = []
+        cssRequests = []
         htmlParse.parse body,
           attribute: (name, value) ->
             if name is 'href' and value.match(/\.css/g)
@@ -113,11 +128,19 @@ util =
               cssUrl = 'http:' + cssUrl
             else
               cssUrl = parsedUrl.href + cssUrl
-          cssFiles.push util.getUrlContents(cssUrl)
-        _when.all(cssFiles).then (cssFiles) ->
-          css = _.reduce cssFiles, (css, cssFile) ->
-            css += cssFile
-          resolve util.parseCss(css)
+          cssRequests.push util.getRequestInfo(cssUrl)
+        _when.all(cssRequests).then (requests) ->
+          css = ''
+
+          _.forEach requests, (request, i) ->
+            css += request.body
+            delete requests[i].body
+
+          data = util.parseCss(css)
+
+          data.requests = requests
+
+          resolve data
 
   parseCss: (cssString) ->
     cssRules = cssParse cssunminifier.unminify(cssString)

@@ -127,4 +127,11 @@ angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$lo
     return selectors.join(', ');
   };
 
+  $scope.getTotalRequestSize = function (requests) {
+    var totalSize = 0;
+    angular.forEach(requests, function(request) {
+      totalSize += request.size;
+    });
+    return totalSize;
+  };
 }]);
