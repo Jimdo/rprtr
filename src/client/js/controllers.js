@@ -66,6 +66,8 @@ angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$lo
     }
   };
 
+  $scope.site = history.getLatest();
+
   $http.post('/parse', { type: $routeParams.type, url: decodeURIComponent($routeParams.url) }).then(function (response) {
     
     history.add(response.data);

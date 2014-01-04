@@ -17,6 +17,20 @@
     <article class="sans-serif mvm pvl bb">
       <div class="dib mrl mrx-l">
         <p class="f1 mega-l man">
+          <span class="gry f6 man lh-copy db mbs"> Number of JS Files</span>
+          <b class="mega-l lh man db">{{site.js.requests.length | number}}</b>
+        </p>
+      </div>
+      <div class="dib">
+        <p class="f1 mega-l man">
+          <span class="gry f6 man lh-copy db mbs"> Total size of CSS Files</span>
+          <b class="mega-l lh man db">{{getTotalRequestSize(site.js.requests) | number}} B</b>
+        </p>
+      </div>
+    </article>
+    <article class="sans-serif mvm pvl bb">
+      <div class="dib mrl mrx-l">
+        <p class="f1 mega-l man">
           <span class="gry f6 man lh-copy db mbs"> Declared font-sizes</span>
           <b class="mega-l lh man db">{{site.decsByProperty.all.fontSize.length | number}}</b>
         </p>

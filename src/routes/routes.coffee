@@ -1,5 +1,8 @@
 util          = require 'util'
 fs            = require 'fs'
+phantomjs     = require 'phantomjs'
+childProcess  = require 'child_process'
+path          = require 'path'
 http          = require 'http'
 request       = require 'request'
 _url          = require 'url'
@@ -81,15 +84,18 @@ util =
       if item.value.match(/px$/g) then item.relativeValue = (raw / max * 100)
 
   getFileName: (url) ->
-    name = url.match(/\/([^\/]+\.css)/)[1]
+    try 
+      url.match(/\/([^\/]+\.css)/)[1]
+    catch e
+      url
 
-  getRequestInfo: (url) ->
+  getRequestInfo: (url, size) ->
     _when.promise (resolve, reject, notify) ->
       req = request url: url, encoding: 'utf8', (error, response, body) ->
         if not error and response.statusCode is 200
           resolve 
-            url: url,
-            size: response.connection.bytesRead,
+            url: url
+            size: size
             body: body
             name: util.getFileName(url)
         else
@@ -110,17 +116,28 @@ util =
       , (err) ->
         reject err
 
+  getUrlsFromLink: (url) ->
+    _when.promise (resolve, reject, notify) ->
+      childArgs = [
+        path.join __dirname, '../phantomjs/get-subrequests.coffee'
+        url
+      ]
+
+      childProcess.execFile phantomjs.path, childArgs, (error, stdout, stderr) ->
+        if not error
+          resolve JSON.parse stdout
+        else
+          reject stderr
+
   parseCssFromUrl: (url) ->
     _when.promise (resolve, reject, notify) ->
-      util.getUrlContents(url).then (body) ->
+      util.getUrlsFromLink(url).then (infos) ->
+        cssInfos = infos.css
         parsedUrl = _url.parse url
-        cssUrls = []
         cssRequests = []
-        htmlParse.parse body,
-          attribute: (name, value) ->
-            if name is 'href' and value.match(/\.css/g)
-              cssUrls.push value
-        _.forEach cssUrls, (cssUrl) ->
+
+        _.forEach cssInfos, (cssInfo) ->
+          cssUrl = cssInfo.url
           if not cssUrl.match(/^(http|https)/g)
             if cssUrl.match(/^\/[^\/]/g)
               cssUrl = parsedUrl.href + cssUrl.replace(/^\//g, '')
@@ -128,7 +145,9 @@ util =
               cssUrl = 'http:' + cssUrl
             else
               cssUrl = parsedUrl.href + cssUrl
-          cssRequests.push util.getRequestInfo(cssUrl)
+
+          cssRequests.push util.getRequestInfo(cssUrl, cssInfo.size)
+        
         _when.all(cssRequests).then (requests) ->
           css = ''
 
@@ -139,6 +158,7 @@ util =
           data = util.parseCss(css)
 
           data.requests = requests
+          data.js = requests: infos.js
 
           resolve data
 

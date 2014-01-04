@@ -230,6 +230,10 @@
          */
         getRequests: function() {
           return requests;
+        },
+
+        getLatest: function() {
+          return latest.data;
         }
       };
     }

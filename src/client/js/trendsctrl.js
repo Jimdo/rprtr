@@ -79,15 +79,21 @@ angular.module('rprtr').controller('TrendsCtrl', [
      */
     var chartConfigs = {
       'Files': {
-        series: ['CSS'],
+        series: ['CSS', 'JS'],
         get: function(data) {
-          return [data.requests.length];
+          return [
+            data.requests.length,
+            data.js.requests.length
+          ];
         }
       },
       'Total Request Size': {
-        series: ['Byte'],
+        series: ['CSS', 'JS'],
         get: function(data) {
-          return [$scope.getTotalRequestSize(data.requests)];
+          return [
+            $scope.getTotalRequestSize(data.requests),
+            $scope.getTotalRequestSize(data.js.requests)
+          ];
         }
       },
       'Font Sizes': {
