@@ -1,0 +1,16 @@
+<section class="phl phx-l" ng-controller="TrendsCtrl">
+  <header class="pvl">
+    <h1 class="f1 lh ttu tracked mbl">Trend</h1>
+  </header>
+
+  <article class="sans-serif mvm pvl" ng-repeat="trend in trendData">
+    <div class="dib mrl mrx-l">
+      <p class="mega-l man">
+        <b class="gry f3 man lh-copy db mbs"> {{trend.name}}</b>
+      </p>
+      <div class="f7"
+        style="width: 800px; height: 250px; margin: 20px" ac-chart="chartType" ac-data="trend.data" ac-config="chrtConfig"></div>
+    </div>
+  </article>
+
+</section>

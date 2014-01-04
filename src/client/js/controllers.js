@@ -55,6 +55,17 @@ angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$lo
 
   $scope.trackHistory = history.toggle;
 
+  $scope.chartType = 'line';
+
+  $scope.chrtConfig = {
+    labels: false,
+    title: '',
+    legend: {
+      display: false,
+      position: 'right'
+    }
+  };
+
   $http.post('/parse', { type: $routeParams.type, url: decodeURIComponent($routeParams.url) }).then(function (response) {
     
     history.add(response.data);
@@ -103,6 +114,9 @@ angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$lo
     },{
       id: 'declarations',
       label: 'Declarations'
+    },{
+      id: 'trend',
+      label: 'Trend'
     }]
   };
 

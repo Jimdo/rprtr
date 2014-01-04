@@ -20,6 +20,7 @@
 .f4    { font-size: 1.2rem; }
 .f5    { font-size: 1rem; }
 .f6    { font-size: .85rem; }
+.f7    { font-size: .5rem; }
 
 @include break(not-small) {
 .f1-ns { font-size: 2rem; }
@@ -28,6 +29,7 @@
 .f4-ns { font-size: 1.2rem; }
 .f5-ns { font-size: 1rem; }
 .f6-ns { font-size: .85rem; }
+.f7-ns { font-size: .5rem; }
 }
 
 @include break(medium) {
@@ -37,6 +39,7 @@
 .f4-m { font-size: 1.2rem; }
 .f5-m { font-size: 1rem; }
 .f6-m { font-size: .85rem; }
+.f7-m { font-size: .5rem; }
 }
 
 @include break(large) {
@@ -48,6 +51,7 @@
 .f4-l { font-size: 1.2rem; }
 .f5-l { font-size: 1rem; }
 .f6-l { font-size: 1rem; }
+.f7-l { font-size: .85rem; }
 }
 
 

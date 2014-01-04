@@ -1,4 +1,4 @@
-angular.module('rprtr', ['ngRoute', 'ngStorage'])
+angular.module('rprtr', ['ngRoute', 'ngStorage', 'angularCharts'])
   
   .config(['$routeProvider', function ($routeProvider) {
 
