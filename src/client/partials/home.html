@@ -1,5 +1,8 @@
 <nav ng-include="'partials/subnav.html'"></nav>
 
+<input type="checkbox" name="activate-history" ng-model="trackHistory.on" />
+<label for="activate-history">History</label>
+
 <h1 ng-show="loading" class="tc f5 pal man tc gray">Loading...</h1>
 <h1 ng-show="parsing" class="tc f5 pal man tc gray">Parsing data...</h1>
 

@@ -48,14 +48,17 @@ angular.module('rprtr').controller('GlobalCtrl', ['$scope', '$location', '$http'
 
 }]);
 
-angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$location', '$http', '$filter', function ($scope, $routeParams, $location, $http, $filter) {
-
+angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$location', '$http', '$filter', 'history', function ($scope, $routeParams, $location, $http, $filter, history) {
   var m = $scope.model || {};
 
   m.d3 = {};
 
+  $scope.trackHistory = history.toggle;
+
   $http.post('/parse', { type: $routeParams.type, url: decodeURIComponent($routeParams.url) }).then(function (response) {
     
+    history.add(response.data);
+
     $scope.site = response.data;
 
     angular.forEach(['width', 'height', 'color', 'backgroundColor'], function (stat) {
@@ -76,6 +79,9 @@ angular.module('rprtr').controller('ReportCtrl', ['$scope', '$routeParams', '$lo
       id: 'overview',
       label: 'Overview',
       active: true
+    },{
+      id: 'requests',
+      label: 'Requests'
     },{
       id: 'font-size',
       label: 'Font-Size'
